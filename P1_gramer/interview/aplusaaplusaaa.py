@@ -25,8 +25,8 @@ def bbb(a, b):
 
 
 m = sys.argv[1]
+n = sys.argv[2]
 m = int(m)
-# n = sys.argv[1]
-
-print(bbb(m, m))
-print(aaa(m, m))
+n = int(n)
+print(bbb(m, n))
+print(aaa(m, n))
