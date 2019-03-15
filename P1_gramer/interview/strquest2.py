@@ -19,6 +19,7 @@ class strQest2():
             for n in str:
                 if m ==n:
                     r[m] +=1
+        print(r)
         max_value = 1
         # ck = ''
         for k in r.keys():

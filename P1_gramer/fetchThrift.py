@@ -12,22 +12,21 @@ import sys
 class FetchThrift:
 
     # 从thrift文件中获取服务列表，服务包含的接口，接口包含的参数
-    def __init__(self, thrift_name, project_dir = None, thrift_dir = 'thrift'):
+    def __init__(self, thrift_name, project_dir=None, thrift_dir='{0}{1}thrift{1}mall{1}'.format('object', os.sep)):
 
         # 参数说明：project_dir 默认为none，若需要请传值
         # self.thrift_name = thrift_name
-        self.project_dir = project_dir
+        self.project_folder = project_dir
         self.thrift_dir = thrift_dir or self.thrift_dir
         self.thrift_name = thrift_name
-        project = self.project_dir
-        if project:
+        if self.project_folder:
 
-            self.source_file_name = '{0}{1}{2}{1}{3}.thrift'.format(self.thrift_dir, os.sep, project, thrift_name)
+            self.source_file_name = '{0}{1}{2}{1}{3}.thrift'.format(self.thrift_dir, os.sep, self.project_folder, thrift_name)
         else:
             self.source_file_name = '{0}{1}{2}.thrift'.format(self.thrift_dir, os.sep, thrift_name)
         print('the thrift filename is : {0}'.format(self.source_file_name))
 
-        self.target_file_name = '{0}_base.py'.format(thrift_name).lower()
+        self.target_file_name = 'wizard{1}mall{1}{2}{1}{0}_base.py'.format(thrift_name.lower(), os.sep, self.project_folder)
         print('Your target filename is : {0}'.format(self.target_file_name))
         # try:
         #     f = open(self.source_file_name).read()
@@ -102,17 +101,17 @@ class FetchThrift:
         fileHandle.write('\nfrom wizard.mall.base import BaseWizard')
         fileHandle.write('\nfrom wizard.mall.base import BaseWizard')
         fileHandle.write('\nfrom wizard.mall.common_thrift import Common_thrift')
-        fileHandle.write("\nsys.path.append(Common_thrift().get_path('{0}'))".format(self.project_dir))
+        fileHandle.write("\nsys.path.append(Common_thrift().get_path('{0}'))".format(self.project_folder))
 
     def ClassHead(self, fileHandle, service_name):
         fileHandle.write("\n\n\nclass {0}Wizrd(ThriftTool, BaseWizard):".format(service_name))
         fileHandle.write("\n\tdef __init__(self):")
-        fileHandle.write("\n\tsuper({0}Wizrd, self).__init__(".format(service_name))
-        fileHandle.write("\n\t\t'{0}', '{1}', "
+        fileHandle.write("\n\t\tsuper({0}Wizrd, self).__init__(".format(service_name))
+        fileHandle.write("\n\t\t\t'{0}', '{1}', "
                          "'mall/{2}' # may need to change 'mall/{2}' "
-                         "to actual path".format(self.thrift_name, service_name, self.project_dir))
-        fileHandle.write("\n\t)")
-        fileHandle.write("\n\tBaseWizard.__init__(self)")
+                         "to actual path".format(self.thrift_name, service_name, self.project_folder))
+        fileHandle.write("\n\t\t)")
+        fileHandle.write("\n\t\tBaseWizard.__init__(self)")
 
     def AddFunction(self, fileHandle, function_name, arg_str):
         # fileHandle.write('\n\n\nclass myThrift(object):')
@@ -142,9 +141,9 @@ if __name__ == '__main__':
     # service_name1 = 'SkuThriftService'
     # project_dir = sys.argv[0]
     thrift_name = sys.argv[1]
-    project_dir = sys.argv[2]
+    project_folder = sys.argv[2]
 
-    h = FetchThrift(thrift_name, project_dir)
+    h = FetchThrift(thrift_name, project_folder)
     filehandle = open(h.target_file_name, 'w')
     # filehandle.write()
     print('\n\n>>>>>>>>>>>>>>>>>>:\ngenerating script head:\n')
